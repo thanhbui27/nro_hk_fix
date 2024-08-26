@@ -41,6 +41,7 @@ public class Skill {
     public static final byte MAFUBA = 26;
     
     public static final byte BIEN_HINH = 27;
+    public static final byte PHAN_THAN = 28;
 
     public SkillTemplate template;
 
@@ -92,7 +93,7 @@ public class Skill {
         this.manaUse = skill.manaUse;
         this.paintCanNotUseSkill = skill.paintCanNotUseSkill;
         this.damage = skill.damage;
-        this.moreInfo = new String(skill.moreInfo);
+        this.moreInfo = skill.moreInfo == null ? skill.moreInfo : new String(skill.moreInfo);
         this.price = skill.price;
         this.template = skill.template;
     }

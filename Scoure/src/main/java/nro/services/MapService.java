@@ -278,6 +278,17 @@ public class MapService {
                 } catch (Exception e) {
                     Log.error(MapService.class, e);
                 }
+            }else if (player.isClone) {
+                Message msg;
+                try {
+                    msg = new Message(-6);
+                    msg.writer().writeInt((int) player.id);
+                    Service.getInstance().sendMessAnotherNotMeInMap(player, msg);
+                    msg.cleanup();
+                    player.zone = null;
+                } catch (Exception e) {
+                    Log.error(MapService.class, e);
+                }
             }
         }
     }

@@ -70,6 +70,7 @@ nro\models\boss\broly\Pet_Broly.class
 nro\consts\ConstTextColor.class
 nro\manager\ConsignManager.class
 nro\consts\ConstAchive.class
+nro\models\player\PlayerClone.class
 nro\models\map\Satellite.class
 nro\server\Client.class
 nro\models\map\DaiHoiVoThuat\DaiHoiVoThuatService$2.class

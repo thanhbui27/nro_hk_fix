@@ -416,14 +416,17 @@ public class Manager {
                 skillTemplate.damInfo = rs.getString("dam_info");
                 skillTemplate.description = rs.getString("desc");
                 nClass.skillTemplatess.add(skillTemplate);
-
+                System.out.println("skill name : " + skillTemplate.name);
                 dataArray = (JSONArray) JSONValue.parse(
                         rs.getString("skills"));
+                System.out.print("skill id : ");
                 for (int j = 0; j < dataArray.size(); j++) {
                     JSONObject dts = (JSONObject) jv.parse(String.valueOf(dataArray.get(j)));
                     Skill skill = new Skill();
                     skill.template = skillTemplate;
                     skill.skillId = Short.parseShort(String.valueOf(dts.get("id")));
+                    
+                    System.out.print(skill.skillId +" ");
                     skill.point = Byte.parseByte(String.valueOf(dts.get("point")));
                     skill.powRequire = Long.parseLong(String.valueOf(dts.get("power_require")));
                     skill.manaUse = Integer.parseInt(String.valueOf(dts.get("mana_use")));
@@ -436,6 +439,7 @@ public class Manager {
                     skill.moreInfo = String.valueOf(dts.get("info"));
                     skillTemplate.skillss.add(skill);
                 }
+                System.out.println("");
             }
             rs.close();
             ps.close();

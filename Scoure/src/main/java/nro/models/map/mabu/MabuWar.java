@@ -67,50 +67,55 @@ public class MabuWar {
     }
 
     public void update(Player player) {
-        if (MapService.gI().isMapMabuWar(player.zone.map.mapId)) {
-            if (isTimeMabuWar()) {
-                if (!initBoss) {
-                    BossFactory.initBossMabuWar();
-                    initBoss = true;
-                }
-                if (Util.canDoWithTime(player.lastTimeBabiday, 30000)) {
-                    if (player.cFlag == 9) {
-                        if (Util.isTrue(50, 100)) {
-                            Service.getInstance().changeFlag(player, 10);
-                            Service.getInstance().sendThongBao(player, "Bạn bị Babiđây thôi miên");
+        try {
+            if (player != null && player.zone != null) {
+                if (MapService.gI().isMapMabuWar(player.zone.map.mapId)) {
+                    if (isTimeMabuWar()) {
+                        if (!initBoss) {
+                            BossFactory.initBossMabuWar();
+                            initBoss = true;
                         }
-                    } else if (Util.isTrue(50, 100)) {
-                        Service.getInstance().changeFlag(player, 9);
-                        Service.getInstance().sendThongBao(player, "Bạn được Ôsin giải trừ phép thuật");
-                    }
-                    player.lastTimeBabiday = System.currentTimeMillis();
-                }
-                sendMenuGotoNextFloorMabuWar(player);
-                Zone zone = player.zone;
-                if (zone.map.mapId == 117) {
-                    EffSkinService.gI().setSlow(player, System.currentTimeMillis(), 1000);
-                }
-                if (zone.map.mapId == 120) {
-                    if (!zone.initBossMabu) {
-                        Service.getInstance().sendPercentMabuEgg(player, zone.percentMabuEgg);
-                        if (zone.percentMabuEgg == 100) {
-                            zone.initBossMabu = true;
+                        if (Util.canDoWithTime(player.lastTimeBabiday, 30000)) {
+                            if (player.cFlag == 9) {
+                                if (Util.isTrue(50, 100)) {
+                                    Service.getInstance().changeFlag(player, 10);
+                                    Service.getInstance().sendThongBao(player, "Bạn bị Babiđây thôi miên");
+                                }
+                            } else if (Util.isTrue(50, 100)) {
+                                Service.getInstance().changeFlag(player, 9);
+                                Service.getInstance().sendThongBao(player, "Bạn được Ôsin giải trừ phép thuật");
+                            }
+                            player.lastTimeBabiday = System.currentTimeMillis();
+                        }
+                        sendMenuGotoNextFloorMabuWar(player);
+                        Zone zone = player.zone;
+                        if (zone.map.mapId == 117) {
+                            EffSkinService.gI().setSlow(player, System.currentTimeMillis(), 1000);
+                        }
+                        if (zone.map.mapId == 120) {
+                            if (!zone.initBossMabu) {
+                                Service.getInstance().sendPercentMabuEgg(player, zone.percentMabuEgg);
+                                if (zone.percentMabuEgg == 100) {
+                                    zone.initBossMabu = true;
+                                }
+                            }
+                        }
+                        if (zone.finishMabuWar) {
+                            sendMenuFinishMabuWar(player);
                         }
                     }
-                }
-                if (zone.finishMabuWar) {
-                    sendMenuFinishMabuWar(player);
+                    try {
+                        if (!isTimeMabuWar() && !MabuWar14h.gI().isTimeMabuWar()) {
+                            kickOutOfMap(player);
+                            removeAllBoss();
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
-            try {
-                if (!isTimeMabuWar()) {
-                    kickOutOfMap(player);
-                    removeAllBoss();
-                }
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

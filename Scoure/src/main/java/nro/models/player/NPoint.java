@@ -538,6 +538,12 @@ public class NPoint {
         for (Integer tl : this.tlHp) {
             this.hpMax += calPercent(this.hpMax, tl);
         }
+        
+        if (this.player.isClone) {
+            this.hpMax = Util.getPercent(((PlayerClone) this.player).master.nPoint.hpMax,
+                    SkillUtil.getPercentPhanThan(player));
+            return;
+        }
 
         if (player.DH1) {
             this.hpMax += calPercent(this.hpMax, player.ChiSoHP_1);
@@ -647,6 +653,10 @@ public class NPoint {
         for (Integer tl : this.tlMp) {
             this.mpMax += calPercent(this.mpMax, tl);
         }
+        if (this.player.isClone) {
+            this.mpMax = Util.getPercent(((PlayerClone) this.player).master.nPoint.mpMax, SkillUtil.getPercentPhanThan(player));
+            return;
+        }
         if (this.player.setClothes.picolo == 5) {
             this.mpMax *= 3;
         }
@@ -745,6 +755,10 @@ public class NPoint {
         }
         for (Integer tl : this.tlSDDep) {
             this.dame += calPercent(this.dame, tl);
+        }
+        if (this.player.isClone) {
+            this.dame = Util.getPercent(((PlayerClone) this.player).master.nPoint.dame, SkillUtil.getPercentPhanThan(player));
+            return;
         }
         if (player.DH1) {
             this.dame += calPercent(this.dame, player.ChiSoSD_1);

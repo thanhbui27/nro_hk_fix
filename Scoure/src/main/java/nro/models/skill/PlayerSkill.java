@@ -36,7 +36,7 @@ public class PlayerSkill {
         return null;
     }
 
-    public byte[] skillShortCut = new byte[10];
+    public byte[] skillShortCut = new byte[11];
 
     public void sendSkillShortCut() {
         Message msg;
@@ -110,9 +110,11 @@ public class PlayerSkill {
             case Skill.SUPER_ANTOMIC:
                 return 9;
             case Skill.BIEN_HINH:
-                return 10;
+                return 10;  
+            case Skill.PHAN_THAN:
+                return 11;      
             default:
-                return 10;
+                return 11;
         }
     }
 

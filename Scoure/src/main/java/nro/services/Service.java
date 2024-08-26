@@ -515,8 +515,7 @@ public class Service {
                             Inventory inv = player.inventory;
                             SkillUtil.setSkill(player, newSkill);
                             try {
-                                Message msg = Service.getInstance()
-                                        .messageSubCommand((byte) 23);
+                                Message msg = Service.getInstance().messageSubCommand((byte) 23);
                                 msg.writer().writeShort(newSkill.skillId);
                                 player.sendMessage(msg);
                                 msg.cleanup();
@@ -825,6 +824,11 @@ public class Service {
             } catch (Exception e) {
                 Log.error(Service.class, e);
             }
+        }
+        if (player.clone != null) {
+            player.clone.nPoint.calPoint();
+            player.clone.nPoint.setFullHpMp();
+            point(player.clone);
         }
     }
 
@@ -1197,10 +1201,14 @@ public class Service {
                 msg.writer().writeByte(player.effectSkill.isBienHinh ? 1 : 0);//set khỉ
                 sendMessAllPlayerInMap(player, msg);
                 msg.cleanup();
+                if (player.clone != null) {
+                    Send_Caitrang(player.clone);
+                }
             } catch (Exception e) {
                 Log.error(Service.class, e);
             }
         }
+        
     }
 
     public void setNotMonkey(Player player) {

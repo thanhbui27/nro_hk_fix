@@ -131,7 +131,11 @@ public class Player {
     public Player playerTrade;
 
     public boolean isBatTu = false;
-
+    
+    //clone player
+    public PlayerClone clone;
+    public boolean isClone;
+    
     //DANH CHO THACH DAU NPC//
     public int thachDauNPC;
 
@@ -460,10 +464,9 @@ public class Player {
     }
 
     public int version() {
-        return session.version;
+        return session == null ? 231 : session.version;
     }
 
-//    private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     public boolean isVersionAbove(int version) {
         return version() >= version;
     }
@@ -511,6 +514,9 @@ public class Player {
                     if (minipet != null) {
                         minipet.update();
                     }
+                    if (clone != null) {
+                        clone.update();
+                    }
                     if (magicTree != null) {
                         magicTree.update();
                     }
@@ -521,7 +527,7 @@ public class Player {
                         event.update();
                     }
                     BlackBallWar.gI().update(this);
-                    if (!this.isBoss && !this.isPet && !this.isMiniPet) {
+                    if (!this.isBoss && !this.isPet && !this.isMiniPet && !this.isClone) {
                         MabuWar.gI().update(this);
                         if (this.server != Manager.SERVER) {
                             PlayerService.gI().banPlayer(this);
@@ -539,7 +545,7 @@ public class Player {
                         checkDoneBDKBSom();
                         checkDoneKhiGasSom();
                     }
-                    if (!this.isBoss && !this.isPet && !this.isMiniPet) {
+                    if (!this.isBoss && !this.isPet && !this.isMiniPet && !this.isClone) {
                         boolean doneSendNotify = false;
                         if (this.zone.map.mapId == 57) {
                             if (this.zone.isCheckKilledAll(57)) {
@@ -1206,6 +1212,9 @@ public class Player {
         if (isHoldNamecBall) {
             NamekBallWar.gI().dropBall(this);
         }
+        if (this.clone != null) {
+            this.clone.setDie(plAtt);
+        }
       //  EffectSkillService.gI().removeMaPhongBa(plAtt);
     }
 
@@ -1297,6 +1306,10 @@ public class Player {
         if (magicTree != null) {
             magicTree.dispose();
             magicTree = null;
+        }
+        if (clone != null) {
+            clone.dispose();
+            clone = null;
         }
         if (playerIntrinsic != null) {
               playerIntrinsic.dispose();
@@ -1427,7 +1440,7 @@ public class Player {
     }
 
     public boolean isPl() {
-        return !isPet && !isBoss && !isMiniPet;
+        return !isPet && !isBoss && !isMiniPet && !isClone;
     }
 
     @Override

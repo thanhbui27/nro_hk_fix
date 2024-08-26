@@ -613,6 +613,7 @@ public class GodGK {
                         Skill skill = null;
                         if (point != 0) {
                             skill = SkillUtil.createSkill(tempId, point);
+                            System.out.println("skill: " + skill.template.name);
 //                            if (tempId == 24) {
 //                                System.out.println("skill: " + skill.template.name);
 //                            }
