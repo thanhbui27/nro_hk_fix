@@ -45,6 +45,8 @@ public class Maintenance extends Thread {
             try {
                 Thread.sleep(1000);
             } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("lỗi bảo trì :" +e.getMessage());
             }
         }
         Log.error("BEGIN MAINTENANCE...............................");

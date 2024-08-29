@@ -37,6 +37,7 @@ public class SkillUtil {
                 
             }
         }
+       
         return new Skill(skill);
     }
 
@@ -59,6 +60,16 @@ public class SkillUtil {
         }
         return skill;
     }
+    
+    public static int getPercentPhanThan(Player player) {
+        if (player == null || player.playerSkill == null || player.playerSkill.skillSelect == null) {
+            return 10;
+        }
+
+        int level = player.playerSkill.skillSelect.point;
+        return level * 10;
+    }
+   
 
     public static Skill createSkillLevel0(int tempId) {
         Skill skill = createEmptySkill();
@@ -266,6 +277,8 @@ public class SkillUtil {
             return Skill.TROI;
         } else if (id >= 509 && id <= 515) {
             return Skill.HUYT_SAO;
+        } else if (id >= 1374 && id <= 1380) {
+            return Skill.PHAN_THAN;          
         } else {
             return -1;
         }
@@ -318,6 +331,8 @@ public class SkillUtil {
             return getSkillbyId(pl, Skill.TROI);
         } else if (tempId >= 509 && tempId <= 515) {
             return getSkillbyId(pl, Skill.HUYT_SAO);
+        } else if (tempId >= 1374 && tempId <= 1380) {
+            return getSkillbyId(pl, Skill.PHAN_THAN);        
         } else {
             return null;
         }
@@ -370,18 +385,20 @@ public class SkillUtil {
             return getSkill(Skill.TROI, level);
         } else if (tempId >= 509 && tempId <= 515) {
             return getSkill(Skill.HUYT_SAO, level);
+        }  else if (tempId >= 1374 && tempId <= 1380) {
+            return getSkill(Skill.PHAN_THAN, level);    
         } else {
             return null;
         }
     }
 
-    public static void setSkill(Player pl, Skill skill) {
+    public static void setSkill(Player pl, Skill skill) {     
         for (int i = 0; i < pl.playerSkill.skills.size(); i++) {
             if (pl.playerSkill.skills.get(i).template.id == skill.template.id) {
                 pl.playerSkill.skills.set(i, skill);
                 break;
             }
-        }
+        }       
     }
 
     public static byte getTyleSkillAttack(Skill skill) {

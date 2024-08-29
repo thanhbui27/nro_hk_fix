@@ -325,7 +325,7 @@ public class Service {
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setString(1, user);
                 resultSet = preparedStatement.executeQuery();
-                if (resultSet.first()) {
+                if (resultSet.next()) {
                     sendThongBaoOK(session, "Tài khoản đã tồn tại");
                 } else {
                     Connection con = DBService.gI().getConnectionForGame();
@@ -333,6 +333,7 @@ public class Service {
                     ps.setString(1, user);
                     ps.setString(2, pass);
                     ps.executeUpdate();
+                    sendThongBaoOK(session, "Đăng ký thành công");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -436,12 +437,14 @@ public class Service {
             if (text.equals("fixlag")) {
             Service.getInstance().player(player);
             Service.getInstance().Send_Caitrang(player);
-        }
+            }
             if (text.equals("baotri_")) {
                 int giay = Integer.getInteger(text.replaceAll("baotri_", ""));
                 try {
                     Maintenance.gI().start(giay * 60);
                 } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("lỗi tại bảo trì : " +e.getMessage());
                 }
                 return;
             } else if (text.startsWith("danhhieu ")) {
@@ -515,8 +518,7 @@ public class Service {
                             Inventory inv = player.inventory;
                             SkillUtil.setSkill(player, newSkill);
                             try {
-                                Message msg = Service.getInstance()
-                                        .messageSubCommand((byte) 23);
+                                Message msg = Service.getInstance().messageSubCommand((byte) 23);
                                 msg.writer().writeShort(newSkill.skillId);
                                 player.sendMessage(msg);
                                 msg.cleanup();
@@ -825,6 +827,11 @@ public class Service {
             } catch (Exception e) {
                 Log.error(Service.class, e);
             }
+        }
+        if (player.clone != null) {
+            player.clone.nPoint.calPoint();
+            player.clone.nPoint.setFullHpMp();
+            point(player.clone);
         }
     }
 
@@ -1197,10 +1204,14 @@ public class Service {
                 msg.writer().writeByte(player.effectSkill.isBienHinh ? 1 : 0);//set khỉ
                 sendMessAllPlayerInMap(player, msg);
                 msg.cleanup();
+                if (player.clone != null) {
+                    Send_Caitrang(player.clone);
+                }
             } catch (Exception e) {
                 Log.error(Service.class, e);
             }
         }
+        
     }
 
     public void setNotMonkey(Player player) {

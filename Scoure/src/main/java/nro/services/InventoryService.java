@@ -245,6 +245,11 @@ public class InventoryService {
         }
         return false;
     }
+    
+    public List<Item> copyItemsBody(Player player) {
+        return copyList(player.inventory.itemsBody);
+    }
+    
 
     private boolean isItemIncremental(Item item) { //item cộng dồn số lượng
         switch (item.template.type) {

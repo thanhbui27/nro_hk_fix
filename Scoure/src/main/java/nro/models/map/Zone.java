@@ -148,7 +148,7 @@ public class Zone {
     private void updatePlayer() {
         for (int i = this.notBosses.size() - 1; i >= 0; i--) {
             Player pl = this.notBosses.get(i);
-            if (!pl.isPet && !pl.isMiniPet) {
+             if (!pl.isPet && !pl.isMiniPet && !pl.isClone) {
                 this.notBosses.get(i).update();
             }
         }
@@ -913,6 +913,9 @@ public class Zone {
             }
             if (player.minipet != null) {
                 player.minipet.followMaster();
+            }
+            if (player.clone != null) {
+                player.clone.followMaster();
             }
             MapService.gI().sendPlayerMove(player);
             TaskService.gI().checkDoneTaskGoToMap(player, player.zone);

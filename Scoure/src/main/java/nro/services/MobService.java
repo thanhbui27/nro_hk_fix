@@ -19,6 +19,7 @@ import nro.consts.ConstItem;
 import nro.models.map.Zone;
 import nro.models.mob.MobFactory;
 import nro.models.mob.MobTemplate;
+import nro.models.player.PlayerClone;
 import nro.server.Manager;
 
 /**
@@ -124,7 +125,7 @@ public class MobService {
     private List<ItemMap> mobReward(Mob mob, Player player, Message msg) {
         List<ItemMap> itemReward = new ArrayList<>();
         try {
-            itemReward = RewardService.gI().getRewardItems(player, mob,
+            itemReward = RewardService.gI().getRewardItems(player.isClone ? ((PlayerClone) player).master: player, mob,
                     mob.location.x + Util.nextInt(-10, 10), mob.zone.map.yPhysicInTop(mob.location.x, mob.location.y));
             msg.writer().writeByte(itemReward.size()); //sl item roi
             for (ItemMap itemMap : itemReward) {

@@ -246,14 +246,14 @@ public class TaskService {
 
     //kiểm tra hoàn thành nhiệm vụ lấy item từ rương
     public void checkDoneTaskGetItemBox(Player player) {
-        if (!player.isBoss && !player.isPet) {
+        if (!player.isBoss && !player.isPet && !player.isClone) {
             doneTask(player, ConstTask.TASK_0_3);
         }
     }
 
     //kiểm tra hoàn thành nhiệm vụ sức mạnh
     public void checkDoneTaskPower(Player player, long power) {
-        if (!player.isBoss && !player.isPet) {
+        if (!player.isBoss && !player.isPet && !player.isClone) {
             if (power >= 16000) {
                 doneTask(player, ConstTask.TASK_7_0);
             }
@@ -283,14 +283,14 @@ public class TaskService {
 
     //kiểm tra hoàn thành nhiệm vụ khi player sử dụng tiềm năng
     public void checkDoneTaskUseTiemNang(Player player) {
-        if (!player.isBoss && !player.isPet) {
+        if (!player.isBoss && !player.isPet && !player.isClone) {
             doneTask(player, ConstTask.TASK_3_0);
         }
     }
 
     //kiểm tra hoàn thành nhiệm vụ khi vào map nào đó
     public void checkDoneTaskGoToMap(Player player, Zone zoneJoin) {
-        if (!player.isBoss && !player.isPet && !player.isMiniPet) {
+        if (!player.isBoss && !player.isPet && !player.isMiniPet && !player.isClone) {
             switch (zoneJoin.map.mapId) {
                 case 39:
                 case 40:
@@ -383,7 +383,7 @@ public class TaskService {
 
     //kiểm tra hoàn thành nhiệm vụ khi tiêu diệt được boss
     public void checkDoneTaskKillBoss(Player player, Boss boss) {
-        if (player != null && !player.isBoss && !player.isPet) {
+        if (player != null && !player.isBoss && !player.isPet && !player.isClone) {
             switch ((int) boss.id) {
                 case BossFactory.TRUNG_UY_TRANG:
                     doneTask(player, ConstTask.TASK_19_1);
@@ -481,7 +481,7 @@ public class TaskService {
 
     //kiểm tra hoàn thành nhiệm vụ khi giết được quái
     public void checkDoneTaskKillMob(Player player, Mob mob) {
-        if (!player.isBoss && !player.isPet) {
+        if (!player.isBoss && !player.isPet && !player.isClone) {
             switch (mob.tempId) {
                 case ConstMob.MOC_NHAN:
                     doneTask(player, ConstTask.TASK_1_0);
@@ -2156,7 +2156,7 @@ public class TaskService {
     }
 
     public int getIdTask(Player player) {
-        if (player.isPet || player.isBoss || player.playerTask == null || player.playerTask.taskMain == null) {
+        if (player.isPet || player.isBoss || player.isClone || player.playerTask == null || player.playerTask.taskMain == null) {
             return -1;
         } else if (player.playerTask.taskMain.id == 0 && player.playerTask.taskMain.index == 0) {
             return ConstTask.TASK_0_0;

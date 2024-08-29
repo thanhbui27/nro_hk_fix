@@ -110,7 +110,11 @@ public class EffectSkillService {
         player.effectSkill.useTroi = false;
         player.effectSkill.mobAnTroi = null;
         player.effectSkill.plAnTroi = null;
+       
         sendEffectPlayer(player, player, TURN_OFF_EFFECT, HOLD_EFFECT);
+        if (player.clone != null && player.clone.effectSkill != null && player.clone.effectSkill.useTroi) {
+            removeUseTroi(player.clone);
+        }
     }
 
     //hết thời gian bị trói
@@ -493,11 +497,11 @@ public class EffectSkillService {
     }
     //hiệu ứng biến hình
     public void sendEffectbienhinh(Player player) {
-//        Skill skill = SkillUtil.getSkillbyId(player, Skill.BIEN_HINH);
-//        if (skill == null) {
-//            Service.getInstance().sendThongBao(player, "Errorrr");
-//            return;
-//        }
+        Skill skill = SkillUtil.getSkillbyId(player, Skill.BIEN_HINH);
+        if (skill == null) {
+            Service.getInstance().sendThongBao(player, "Errorrr");
+            return;
+        }
         Message msg;
         try {
             msg = new Message(-45);
@@ -508,6 +512,24 @@ public class EffectSkillService {
             msg.cleanup();
         } catch (Exception e) {
             Log.error(EffectSkillService.class, e);
+        }
+    }
+    public void sendEffectPhanThan(Player player) {
+        Skill skill = SkillUtil.getSkillbyId(player, Skill.PHAN_THAN);
+        if (skill == null) {
+            Service.getInstance().sendThongBao(player, "Errorrr");
+            return;
+        }
+        Message msg;
+        try {
+            msg = new Message(-45);
+            msg.writer().writeByte(6);
+            msg.writer().writeInt((int) player.id);
+            msg.writer().writeShort(skill.skillId);
+            Service.getInstance().sendMessAllPlayerInMap(player, msg);
+            msg.cleanup();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

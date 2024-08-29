@@ -226,9 +226,9 @@ public class PlayerDAO {
             dataCharms.add(0);
             String charms = dataCharms.toJSONString();
 
-            int[] skillsArr = gender == 0 ? new int[]{0, 1, 6, 9, 10, 20, 22, 19, 24, 27}
-                    : gender == 1 ? new int[]{2, 3, 7, 11, 12, 17, 18, 19, 26, 27}
-                    : new int[]{4, 5, 8, 13, 14, 21, 23, 19, 25, 27};
+            int[] skillsArr = gender == 0 ? new int[]{0, 1, 6, 9, 10, 20, 22, 19 ,28, 24, 27}
+                    : gender == 1 ? new int[]{2, 3, 7, 11, 12, 17, 18, 19,28, 26, 27}
+                    : new int[]{4, 5, 8, 13, 14, 21, 23, 19,28, 25, 27};
 
             JSONArray dataSkills = new JSONArray();
             for (int i = 0; i < skillsArr.length; i++) {
@@ -246,7 +246,7 @@ public class PlayerDAO {
 
             JSONArray dataSkillShortcut = new JSONArray();
             dataSkillShortcut.add(gender == 0 ? 0 : gender == 1 ? 2 : 4);
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < 10; i++) {
                 dataSkillShortcut.add(-1);
             }
             String skillsShortcut = dataSkillShortcut.toJSONString();

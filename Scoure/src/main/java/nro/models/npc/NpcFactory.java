@@ -3785,7 +3785,7 @@ public class NpcFactory {
                                             case 3: 
                                                  SieuHangManager.CreateClone(player);
                                                  break;
-                                            case 5: 
+                                            case 4: 
                                                  ChangeMapService.gI().changeMapNonSpaceship(player, ConstMap.DAI_HOI_VO_THUAT, player.location.x, 336);
                                                   break;
                                         }

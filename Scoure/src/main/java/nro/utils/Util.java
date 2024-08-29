@@ -36,7 +36,11 @@ public class Util {
         }
         return bossId;
     }
-
+    
+    public static int getPercent(int value, int percent) {
+        return value / 100 * percent;
+    }
+    
     public static String convertSecondsToTime(long totalSeconds) {
         if (totalSeconds < 60) {
             return totalSeconds + "s trước";

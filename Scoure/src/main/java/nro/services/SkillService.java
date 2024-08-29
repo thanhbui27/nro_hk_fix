@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import nro.models.player.PlayerClone;
 import nro.models.sieu_hang.CloneSieuHang;
 import nro.models.skill.SkillSpecial;
 import nro.services.func.RadaService;
@@ -52,7 +53,9 @@ public class SkillService {
             if (player == null || player.playerSkill == null || player.effectSkill != null && player.effectSkill.isHaveEffectSkill()) {
                 return false;
             }
-
+            if (player.clone != null) {
+                useSkill(player.clone, plTarget, mobTarget, null);
+            }
             if (player.playerSkill.skillSelect.template.type == 2 && canUseSkillWithMana(player) && canUseSkillWithCooldown(player)) {
                 useSkillBuffToPlayer(player, plTarget);
                 return true;
@@ -121,7 +124,6 @@ public class SkillService {
 
     public void userSkillSpecial(Player player, byte st, byte skillId, Short dx, Short dy, byte dir, Short x, Short y) {
         try {
-
             switch (skillId) {
                 case Skill.SUPER_KAME:
                     if (player.inventory.itemsBody.get(7).isNotNullItem()) {
@@ -197,6 +199,8 @@ public class SkillService {
             affterUseSkill(player, player.playerSkill.skillSelect.template.id);
 
         } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("loi taij skill service dong 206 : " + ex.getMessage());
         }
     }
 
@@ -675,37 +679,39 @@ public class SkillService {
     private void useSkillAttack(Player player, Player plTarget, Mob mobTarget) {
         if (!player.isBoss) {
             if (player.isPet) {
-                if (player.nPoint.stamina > 0) {
-                    player.nPoint.numAttack++;
-                    boolean haveCharmPet = ((Pet) player).master.charms.tdDeTu > System.currentTimeMillis();
-                    if (haveCharmPet ? player.nPoint.numAttack >= 5 : player.nPoint.numAttack >= 2) {
-                        player.nPoint.numAttack = 0;
-                        player.nPoint.stamina--;
-                    }
-                } else {
-                    ((Pet) player).askPea();
-                    return;
-                }
-            } else {
-                if (player.nPoint.stamina > 0) {
-                    if (player.charms.tdDeoDai < System.currentTimeMillis()) {
+                if (player.isClone) {
+                    if (player.nPoint.stamina > 0) {
                         player.nPoint.numAttack++;
-                        if (player.nPoint.numAttack == 5) {
+                        boolean haveCharmPet = ((Pet) player).master.charms.tdDeTu > System.currentTimeMillis();
+                        if (haveCharmPet ? player.nPoint.numAttack >= 5 : player.nPoint.numAttack >= 2) {
                             player.nPoint.numAttack = 0;
                             player.nPoint.stamina--;
-                            PlayerService.gI().sendCurrentStamina(player);
                         }
+                    } else {
+                        ((Pet) player).askPea();
+                        return;
                     }
                 } else {
-                    Service.getInstance().sendThongBao(player, "Thể lực đã cạn kiệt, hãy nghỉ ngơi để lấy lại sức");
-                    return;
+                    if (player.nPoint.stamina > 0) {
+                        if (player.charms.tdDeoDai < System.currentTimeMillis()) {
+                            player.nPoint.numAttack++;
+                            if (player.nPoint.numAttack == 5) {
+                                player.nPoint.numAttack = 0;
+                                player.nPoint.stamina--;
+                                PlayerService.gI().sendCurrentStamina(player);
+                            }
+                        }
+                    } else {
+                        Service.getInstance().sendThongBao(player, "Thể lực đã cạn kiệt, hãy nghỉ ngơi để lấy lại sức");
+                        return;
+                    }
                 }
             }
         }
         List<Mob> mobs;
         boolean miss = false;
         if (player.playerSkill.skillSelect.template.id == Skill.KAMEJOKO || player.playerSkill.skillSelect.template.id == Skill.MASENKO || player.playerSkill.skillSelect.template.id == Skill.ANTOMIC) {
-            if (!player.isBoss && !player.isPet && !player.isMiniPet) {
+            if (!player.isBoss && !player.isPet && !player.isMiniPet && !player.isClone) {
                 player.playerTask.achivements.get(ConstAchive.NOI_CONG_CAO_CUONG).count++;
             }
 
@@ -946,8 +952,9 @@ public class SkillService {
                     RadaService.getInstance().setIDAuraEff(player, player.getAura());
                     ItemTimeService.gI().sendItemTime(player, player.gender == 0 ? 30011 : player.gender == 1 ? 30006 : 30005, player.effectSkill.timeBienHinh / 1000);
                     affterUseSkill(player, player.playerSkill.skillSelect.template.id);
-                break;
+                
                 }
+                break;
             case Skill.KHIEN_NANG_LUONG:
                 EffectSkillService.gI().setStartShield(player);
                 EffectSkillService.gI().sendEffectPlayer(player, player, EffectSkillService.TURN_ON_EFFECT, EffectSkillService.SHIELD_EFFECT);
@@ -1038,6 +1045,22 @@ public class SkillService {
                         EffectSkillService.gI().removeHuytSao(player);
                     }
                 }
+                break;
+            case Skill.PHAN_THAN:
+                if(!player.isClone){
+                    try {
+                        EffectSkillService.gI().sendEffectPhanThan(player);
+                        if (player.clone != null) {
+                            player.clone.dispose();
+                        }
+                        player.clone = new PlayerClone(player);
+                        affterUseSkill(player, player.playerSkill.skillSelect.template.id);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                        System.out.println("error : " + e.getMessage());
+                    }
+                }
+                               
                 break;
         }
         if (player.playerTask.achivements.size() > 0) {
@@ -1362,6 +1385,9 @@ public class SkillService {
             case Skill.BIEN_HINH:
                 subTimeParam = 1;
                 break;
+            case Skill.PHAN_THAN:
+                subTimeParam = 1;
+                break;
         }
         int coolDown = player.playerSkill.skillSelect.coolDown;
         player.playerSkill.skillSelect.lastTimeUseThisSkill = System.currentTimeMillis() - (coolDown * subTimeParam / 100);
@@ -1431,36 +1457,50 @@ public class SkillService {
     }
 
     public void selectSkill(Player player, int skillId) {
-        Skill skillBefore = player.playerSkill.skillSelect;
         for (Skill skill : player.playerSkill.skills) {
             if (skill.skillId != -1 && skill.template.id == skillId) {
                 player.playerSkill.skillSelect = skill;
-                switch (skillBefore.template.id) {
-                    case Skill.DRAGON:
-                    case Skill.KAMEJOKO:
-                    case Skill.DEMON:
-                    case Skill.MASENKO:
-                    case Skill.LIEN_HOAN:
-                    case Skill.GALICK:
-                    case Skill.ANTOMIC:
-                        switch (skill.template.id) {
-                            case Skill.KAMEJOKO:
-                                skill.lastTimeUseThisSkill = System.currentTimeMillis() + (5000 / 2);
-                                break;
-                            case Skill.DRAGON:
-                            case Skill.DEMON:
-                            case Skill.MASENKO:
-                            case Skill.LIEN_HOAN:
-                            case Skill.GALICK:
-                            case Skill.ANTOMIC:
-                                skill.lastTimeUseThisSkill = System.currentTimeMillis() + (skill.coolDown / 2);
-                                break;
-                        }
-                        break;
-                }
                 break;
             }
         }
+        if (player.clone != null) {
+            selectSkill(player.clone, skillId);
+        }
+        
+//        Skill skillBefore = player.playerSkill.skillSelect;
+//        if(skillBefore != null){
+//            for (Skill skill : player.playerSkill.skills) {
+//                if (skill.skillId != -1 && skill.template.id == skillId) {
+//                    player.playerSkill.skillSelect = skill;
+//                    switch (skillBefore.template.id) {
+//                        case Skill.DRAGON:
+//                        case Skill.KAMEJOKO:
+//                        case Skill.DEMON:
+//                        case Skill.MASENKO:
+//                        case Skill.LIEN_HOAN:
+//                        case Skill.GALICK:
+//                        case Skill.ANTOMIC:
+//                            switch (skill.template.id) {
+//                                case Skill.KAMEJOKO:
+//                                    skill.lastTimeUseThisSkill = System.currentTimeMillis() + (5000 / 2);
+//                                    break;
+//                                case Skill.DRAGON:
+//                                case Skill.DEMON:
+//                                case Skill.MASENKO:
+//                                case Skill.LIEN_HOAN:
+//                                case Skill.GALICK:
+//                                case Skill.ANTOMIC:
+//                                    skill.lastTimeUseThisSkill = System.currentTimeMillis() + (skill.coolDown / 2);
+//                                    break;
+//                            }
+//                            break;
+//                    }
+//                    break;
+//                }
+//            } 
+//        }
+//       
+     
     }
 
     public void useSKillNotFocus(Player player, short skillID, short xPlayer, short yPlayer, byte dir, short x, short y) {

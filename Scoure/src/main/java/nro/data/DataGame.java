@@ -32,7 +32,7 @@ import java.util.Map;
 public class DataGame {
     public static byte vsData = 6;
     public static byte vsMap = 5;
-    public static byte vsSkill = 5;
+    public static byte vsSkill = 8;
     public static byte vsItem = 6;
 
     public static String LINK_IP_PORT = "Ngọc Rồng Online:localhost:14445:0,0,0";
