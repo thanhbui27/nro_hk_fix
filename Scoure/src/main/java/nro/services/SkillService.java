@@ -56,10 +56,10 @@ public class SkillService {
             if (player.clone != null) {
                 useSkill(player.clone, plTarget, mobTarget, null);
             }
-//            if (player.playerSkill.skillSelect.template.type == 2 && canUseSkillWithMana(player) && canUseSkillWithCooldown(player)) {
-//                useSkillBuffToPlayer(player, plTarget);
-//                return true;
-//            }
+            if (player.playerSkill.skillSelect.template.type == 2 && canUseSkillWithMana(player) && canUseSkillWithCooldown(player)) {
+                useSkillBuffToPlayer(player, plTarget);
+                return true;
+            }
 
             if ((player.effectSkill.isHaveEffectSkill()
                     && (player.playerSkill.skillSelect.template.id != Skill.TU_SAT
@@ -124,11 +124,7 @@ public class SkillService {
 
     public void userSkillSpecial(Player player, byte st, byte skillId, Short dx, Short dy, byte dir, Short x, Short y) {
         try {
-
             switch (skillId) {
-                case Skill.PHAN_THAN:
-                    useSkillAlone(player);
-                return;
                 case Skill.SUPER_KAME:
                     if (player.inventory.itemsBody.get(7).isNotNullItem()) {
                         for (int i = 1; i < player.inventory.itemsBody.get(7).itemOptions.size(); i++) {
@@ -203,6 +199,8 @@ public class SkillService {
             affterUseSkill(player, player.playerSkill.skillSelect.template.id);
 
         } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("loi taij skill service dong 206 : " + ex.getMessage());
         }
     }
 
@@ -679,7 +677,7 @@ public class SkillService {
     }
 
     private void useSkillAttack(Player player, Player plTarget, Mob mobTarget) {
-               if (!player.isBoss) {
+        if (!player.isBoss) {
             if (player.isPet) {
                 if (player.isClone) {
                     if (player.nPoint.stamina > 0) {
@@ -713,7 +711,7 @@ public class SkillService {
         List<Mob> mobs;
         boolean miss = false;
         if (player.playerSkill.skillSelect.template.id == Skill.KAMEJOKO || player.playerSkill.skillSelect.template.id == Skill.MASENKO || player.playerSkill.skillSelect.template.id == Skill.ANTOMIC) {
-            if (!player.isBoss && !player.isPet && !player.isMiniPet) {
+            if (!player.isBoss && !player.isPet && !player.isMiniPet && !player.isClone) {
                 player.playerTask.achivements.get(ConstAchive.NOI_CONG_CAO_CUONG).count++;
             }
 
@@ -954,8 +952,9 @@ public class SkillService {
                     RadaService.getInstance().setIDAuraEff(player, player.getAura());
                     ItemTimeService.gI().sendItemTime(player, player.gender == 0 ? 30011 : player.gender == 1 ? 30006 : 30005, player.effectSkill.timeBienHinh / 1000);
                     affterUseSkill(player, player.playerSkill.skillSelect.template.id);
-                break;
+                
                 }
+                break;
             case Skill.KHIEN_NANG_LUONG:
                 EffectSkillService.gI().setStartShield(player);
                 EffectSkillService.gI().sendEffectPlayer(player, player, EffectSkillService.TURN_ON_EFFECT, EffectSkillService.SHIELD_EFFECT);
@@ -1048,19 +1047,20 @@ public class SkillService {
                 }
                 break;
             case Skill.PHAN_THAN:
-                System.out.println("use skill id : " + player.playerSkill.skillSelect.template.id);
-                try {
-                    EffectSkillService.gI().sendEffectPhanThan(player);
-                    if (player.clone != null) {
-                        player.clone.dispose();
+                if(!player.isClone){
+                    try {
+                        EffectSkillService.gI().sendEffectPhanThan(player);
+                        if (player.clone != null) {
+                            player.clone.dispose();
+                        }
+                        player.clone = new PlayerClone(player);
+                        affterUseSkill(player, player.playerSkill.skillSelect.template.id);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                        System.out.println("error : " + e.getMessage());
                     }
-                    player.clone = new PlayerClone(player);
-                    affterUseSkill(player, player.playerSkill.skillSelect.template.id);
-                }catch(Exception e){
-                    e.printStackTrace();
-                    System.out.println("error : " + e.getMessage());
                 }
-                
+                               
                 break;
         }
         if (player.playerTask.achivements.size() > 0) {

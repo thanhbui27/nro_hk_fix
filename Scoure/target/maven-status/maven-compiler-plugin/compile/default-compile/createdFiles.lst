@@ -52,6 +52,7 @@ nro\server\model\AntiLogin.class
 nro\models\boss\iboss\IBossOutfit.class
 nro\models\boss\mabu_war\Yacon_Tang4.class
 nro\models\map\phoban\KhiGas.class
+nro\server\MenuQuanLy.class
 nro\models\boss\mabu_war\Mabu_Tang6.class
 nro\login\Cmd.class
 nro\models\npc\NpcFactory$10.class
@@ -138,6 +139,7 @@ nro\services\func\minigame\ChonAiDay_Gem.class
 nro\consts\ConstAttribute.class
 nro\models\skill\NClass.class
 nro\models\item\ItemReward.class
+nro\server\ServerManager$1.class
 nro\models\item\ItemTime.class
 nro\models\boss\cdrd\CBoss.class
 nro\models\boss\robotsatthu\Pic.class
@@ -334,6 +336,7 @@ nro\manager\SieuHangManager$1.class
 nro\models\boss\dhvt\TauPayPay.class
 nro\jdbc\daos\GodGK.class
 nro\models\boss\boss_doanh_trai\TrungUyThep.class
+nro\server\MenuQuanLy$3.class
 nro\consts\ConstAccount.class
 nro\server\io\pool\SendPool.class
 nro\services\InventoryService.class
@@ -431,12 +434,14 @@ nro\services\FriendAndEnemyService.class
 nro\services\OpenPowerService.class
 nro\models\map\challenge\MartialCongressManager.class
 nro\models\boss\Potaufeu\Boss_NhanBan.class
+nro\server\MenuQuanLy$2.class
 nro\models\npc\BaseMenu.class
 nro\jdbc\DBService.class
 nro\models\boss\BossFactory.class
 nro\models\boss\dhvt\SoiHecQuyn.class
 nro\models\npc\NpcFactory$46.class
 nro\power\Caption.class
+nro\server\MenuQuanLy$1$1.class
 nro\models\map\war\NamekBallWar.class
 nro\server\Maintenance.class
 nro\models\shop\ItemShop.class
@@ -447,6 +452,7 @@ nro\models\player\RewardBlackBall.class
 nro\models\map\SatelliteDefense.class
 nro\attr\Attribute$AttributeBuilder.class
 nro\models\map\DaiHoiVoThuat\DaiHoiVoThuatService.class
+nro\server\MenuQuanLy$1.class
 nro\models\npc\NpcTemplate.class
 nro\jdbc\daos\ShopDAO.class
 nro\services\func\SummonDragon.class

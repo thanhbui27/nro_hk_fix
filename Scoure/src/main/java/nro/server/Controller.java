@@ -512,8 +512,8 @@ public class Controller {
                     if (player != null) {
                         int selectSkill = _msg.reader().readShort();
                         SkillService.gI().selectSkill(player, selectSkill);
-                    
-                      if( selectSkill == Skill.BIEN_HINH){
+                        
+                        if(selectSkill == Skill.BIEN_HINH || selectSkill == Skill.PHAN_THAN){
                             SkillService.gI().useSkill(player, null, null, _msg);
                         }
                     }
@@ -722,6 +722,7 @@ public class Controller {
             try {
                 Player player = _session.player;
                 byte command = _msg.reader().readByte();
+                System.out.println("message Sub Command " + command);
                 switch (command) {
                     case 16:
                         byte type = _msg.reader().readByte();

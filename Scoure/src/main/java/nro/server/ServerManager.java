@@ -1,5 +1,10 @@
 package nro.server;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import nro.attr.AttributeManager;
 import nro.jdbc.DBService;
 import nro.jdbc.daos.AccountDAO;
@@ -41,6 +46,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import nro.manager.SieuHangControl;
 import nro.manager.SieuHangManager;
 import nro.manager.TopBanDoKhoBau;
@@ -118,6 +129,42 @@ public class ServerManager {
      public void run() {
         try {
             isRunning = true;
+            JFrame frame = new JFrame("");
+            frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // Đặt để bắt sự kiện đóng cửa sổ
+
+            // Đặt biểu tượng của frame
+            ImageIcon icon = new ImageIcon("path_to_your_icon_file"); // Đường dẫn tới biểu tượng của bạn
+            frame.setIconImage(icon.getImage());
+
+            // Thêm WindowListener để bắt sự kiện đóng cửa sổ
+            frame.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    int choice = JOptionPane.showConfirmDialog(frame,
+                            "Bạn có muốn đóng MENU Quản Lý không?",
+                            "Xác nhận đóng.",
+                            JOptionPane.YES_NO_OPTION);
+                    if (choice == JOptionPane.YES_OPTION) {
+                        frame.dispose(); // Đóng frame nếu người dùng chọn đồng ý
+                        System.exit(0); // Đóng ứng dụng hoặc thực hiện hành động khác
+                    }
+                }
+            });
+             // Tạo panel MenuQuanLy và thêm vào frame
+            JPanel panel = new MenuQuanLy();
+            frame.add(panel);
+
+            // Cấu hình frame và hiển thị
+            frame.pack();
+            frame.setVisible(true);
+        
+            // Vẽ chữ "QUẢN LÝ MÁY CHỦ" trên frame
+            JLabel label = new JLabel("QUẢN LÝ MÁY CHỦ", JLabel.CENTER);
+            label.setFont(new Font("Arial", Font.BOLD, 24)); // Font in đậm, kích thước 24
+            label.setForeground(Color.RED); // Màu đỏ cho chữ
+            label.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 2)); // Viền màu vàng
+            frame.add(label, BorderLayout.NORTH); // Đặt label ở phía trên cùng của frame
+            
             activeCommandLine();
             activeGame();
             activeLogin();
@@ -359,7 +406,7 @@ public class ServerManager {
         } catch (Exception e) {
             Log.error(ServerManager.class, e);
         }
-        Client.gI().close();
+//        Client.gI().close();
         Log.success("SUCCESSFULLY MAINTENANCE!...................................");
         System.exit(0);
     }

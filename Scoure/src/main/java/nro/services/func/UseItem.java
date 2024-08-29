@@ -1797,6 +1797,8 @@ public class UseItem {
                             msg.writer().writeShort(curSkill.skillId);
                             pl.sendMessage(msg);
                             msg.cleanup();
+                            System.out.println("start learn " +curSkill.template.name + " - " + curSkill.point);
+
                         } else {
                             Skill skillNeed = SkillUtil.createSkill(SkillUtil.getTempSkillSkillByItemID(item.template.id), level);
                             Service.getInstance().sendThongBao(pl, "Vui lòng học " + skillNeed.template.name + " cấp " + skillNeed.point + " trước!");
@@ -1804,7 +1806,7 @@ public class UseItem {
                     } else {
                         if (curSkill.point + 1 == level) {
                             curSkill = SkillUtil.createSkill(SkillUtil.getTempSkillSkillByItemID(item.template.id), level);
-                            //System.out.println(curSkill.template.name + " - " + curSkill.point);
+                            System.out.println(curSkill.template.name + " - " + curSkill.point);
                             SkillUtil.setSkill(pl, curSkill);
                             InventoryService.gI().subQuantityItemsBag(pl, item, 1);
                             msg = Service.getInstance().messageSubCommand((byte) 62);

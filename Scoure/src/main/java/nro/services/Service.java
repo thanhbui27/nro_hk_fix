@@ -325,7 +325,7 @@ public class Service {
                 preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setString(1, user);
                 resultSet = preparedStatement.executeQuery();
-                if (resultSet.first()) {
+                if (resultSet.next()) {
                     sendThongBaoOK(session, "Tài khoản đã tồn tại");
                 } else {
                     Connection con = DBService.gI().getConnectionForGame();
@@ -333,6 +333,7 @@ public class Service {
                     ps.setString(1, user);
                     ps.setString(2, pass);
                     ps.executeUpdate();
+                    sendThongBaoOK(session, "Đăng ký thành công");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -436,12 +437,14 @@ public class Service {
             if (text.equals("fixlag")) {
             Service.getInstance().player(player);
             Service.getInstance().Send_Caitrang(player);
-        }
+            }
             if (text.equals("baotri_")) {
                 int giay = Integer.getInteger(text.replaceAll("baotri_", ""));
                 try {
                     Maintenance.gI().start(giay * 60);
                 } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("lỗi tại bảo trì : " +e.getMessage());
                 }
                 return;
             } else if (text.startsWith("danhhieu ")) {
